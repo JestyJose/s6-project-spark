@@ -4,61 +4,37 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design system for S6 Project Hub — all colors in HSL */
-
 @layer base {
   :root {
-    /* Surfaces */
     --background: 220 25% 96%;
     --foreground: 222 50% 10%;
-
     --card: 0 0% 100%;
     --card-foreground: 222 50% 10%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222 50% 10%;
-
-    /* Brand — deep navy */
     --primary: 221 65% 20%;
     --primary-foreground: 210 100% 98%;
-
-    /* Secondary — soft slate */
     --secondary: 220 20% 92%;
     --secondary-foreground: 221 65% 20%;
-
-    /* Muted */
     --muted: 220 20% 92%;
     --muted-foreground: 220 15% 50%;
-
-    /* Accent — bright teal */
     --accent: 199 89% 46%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 4 84% 58%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 220 20% 87%;
     --input: 220 20% 87%;
     --ring: 199 89% 46%;
-
     --radius: 0.75rem;
-
-    /* Status colors */
     --status-taken: 4 84% 58%;
     --status-taken-bg: 4 84% 95%;
     --status-idea: 160 60% 40%;
     --status-idea-bg: 160 60% 93%;
-
-    /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(221 65% 20%), hsl(221 65% 28%));
     --gradient-accent: linear-gradient(135deg, hsl(199 89% 46%), hsl(199 89% 36%));
-    --gradient-card-hover: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 25% 98%));
-
-    /* Shadows */
     --shadow-card: 0 2px 12px -2px hsl(221 65% 20% / 0.10);
     --shadow-card-hover: 0 8px 28px -4px hsl(221 65% 20% / 0.18);
     --shadow-hero: 0 20px 60px -10px hsl(221 65% 10% / 0.35);
-
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -71,36 +47,20 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
+  * { @apply border-border; }
   body {
     @apply bg-background text-foreground;
     font-family: 'DM Sans', sans-serif;
   }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', sans-serif;
-  }
+  h1, h2, h3, h4, h5, h6 { font-family: 'Sora', sans-serif; }
 }
 
 @layer utilities {
-  .gradient-hero {
-    background: var(--gradient-hero);
-  }
-  .gradient-accent {
-    background: var(--gradient-accent);
-  }
-  .shadow-card {
-    box-shadow: var(--shadow-card);
-  }
-  .shadow-card-hover {
-    box-shadow: var(--shadow-card-hover);
-  }
-  .shadow-hero {
-    box-shadow: var(--shadow-hero);
-  }
+  .gradient-hero { background: var(--gradient-hero); }
+  .gradient-accent { background: var(--gradient-accent); }
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .shadow-card-hover { box-shadow: var(--shadow-card-hover); }
+  .shadow-hero { box-shadow: var(--shadow-hero); }
   .status-taken {
     color: hsl(var(--status-taken));
     background-color: hsl(var(--status-taken-bg));
@@ -111,3 +71,8 @@
   }
 }
 
+@layer components {
+  .form-input {
+    @apply w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring;
+  }
+}
