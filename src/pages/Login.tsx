@@ -4,37 +4,23 @@ import { useAuth } from "@/hooks/useAuth";
 import { Shield } from "lucide-react";
 
 const Login = () => {
-  const { signIn, signUp } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState("");
-  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setInfo("");
     setLoading(true);
-
-    if (isSignUp) {
-      const { error } = await signUp(email, password);
-      setLoading(false);
-      if (error) {
-        setError(error.message);
-      } else {
-        setInfo("Check your email to confirm your account, then sign in.");
-      }
+    const { error } = await signIn(email, password);
+    setLoading(false);
+    if (error) {
+      setError(error.message);
     } else {
-      const { error } = await signIn(email, password);
-      setLoading(false);
-      if (error) {
-        setError(error.message);
-      } else {
-        navigate("/admin");
-      }
+      navigate("/admin");
     }
   };
 
@@ -47,10 +33,10 @@ const Login = () => {
           </div>
         </div>
         <h2 className="font-sora text-2xl font-bold text-center text-foreground mb-1">
-          {isSignUp ? "Create Account" : "Admin Login"}
+          Admin Login
         </h2>
         <p className="text-center text-muted-foreground text-sm mb-8">
-          {isSignUp ? "Sign up to request admin access." : "Sign in to manage projects."}
+          Sign in to manage projects.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -79,26 +65,15 @@ const Login = () => {
           </div>
 
           {error && <p className="text-destructive text-xs">{error}</p>}
-          {info && <p className="text-xs" style={{ color: "hsl(var(--status-idea))" }}>{info}</p>}
 
           <button
             type="submit"
             disabled={loading}
             className="w-full gradient-hero text-primary-foreground font-semibold py-2.5 rounded-xl hover:opacity-90 transition-opacity text-sm disabled:opacity-50"
           >
-            {loading ? "Please wait…" : isSignUp ? "Sign Up" : "Sign In"}
+            {loading ? "Please wait…" : "Sign In"}
           </button>
         </form>
-
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-          <button
-            onClick={() => { setIsSignUp(!isSignUp); setError(""); setInfo(""); }}
-            className="text-accent font-semibold hover:underline"
-          >
-            {isSignUp ? "Sign In" : "Sign Up"}
-          </button>
-        </p>
       </div>
     </main>
   );
