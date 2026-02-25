@@ -19,37 +19,46 @@ export type Database = {
           category: string | null
           created_at: string
           description: string
+          external_link: string | null
           id: string
+          images: string[] | null
           pdf_url: string | null
           semester: string
           status: string
           team_members: string[] | null
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           category?: string | null
           created_at?: string
           description: string
+          external_link?: string | null
           id?: string
+          images?: string[] | null
           pdf_url?: string | null
           semester: string
           status?: string
           team_members?: string[] | null
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           category?: string | null
           created_at?: string
           description?: string
+          external_link?: string | null
           id?: string
+          images?: string[] | null
           pdf_url?: string | null
           semester?: string
           status?: string
           team_members?: string[] | null
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }

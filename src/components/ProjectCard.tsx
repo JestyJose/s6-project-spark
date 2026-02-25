@@ -1,9 +1,10 @@
+import { Link } from "react-router-dom";
 import type { Project } from "@/types/project";
 import StatusBadge from "./StatusBadge";
 import { Users, Tag, FileText } from "lucide-react";
 
 const ProjectCard = ({ project }: { project: Project }) => (
-  <div className="group bg-card rounded-2xl border border-border shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 flex flex-col overflow-hidden">
+  <Link to={`/project/${project.id}`} className="group bg-card rounded-2xl border border-border shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 flex flex-col overflow-hidden">
     <div className={`h-1 w-full ${project.status === "Taken" ? "bg-destructive" : "bg-accent"}`} />
     <div className="p-6 flex flex-col flex-1 gap-4">
       <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -47,7 +48,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
         </div>
       </div>
     </div>
-  </div>
+  </Link>
 );
 
 export default ProjectCard;
