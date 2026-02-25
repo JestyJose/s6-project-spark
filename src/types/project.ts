@@ -10,6 +10,9 @@ export interface Project {
   status: ProjectStatus;
   team_members: string[];
   pdf_url: string | null;
+  images: string[];
+  video_url: string | null;
+  external_link: string | null;
   created_at: string;
   updated_at: string;
 }

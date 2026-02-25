@@ -14,6 +14,8 @@ const emptyForm = {
   status: "Idea Submitted" as ProjectStatus,
   team_members: "",
   category: "",
+  video_url: "",
+  external_link: "",
 };
 
 const Admin = () => {
@@ -28,6 +30,7 @@ const Admin = () => {
   const [formError, setFormError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
 
   if (authLoading) return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-accent" /></div>;
@@ -42,13 +45,24 @@ const Admin = () => {
 
   const uploadPdf = async (): Promise<string | null> => {
     if (!pdfFile) return null;
-    setUploading(true);
     const path = `${Date.now()}-${pdfFile.name}`;
     const { error } = await supabase.storage.from("project-pdfs").upload(path, pdfFile);
-    setUploading(false);
     if (error) { setFormError("PDF upload failed: " + error.message); return null; }
     const { data } = supabase.storage.from("project-pdfs").getPublicUrl(path);
     return data.publicUrl;
+  };
+
+  const uploadImages = async (): Promise<string[]> => {
+    if (imageFiles.length === 0) return [];
+    const urls: string[] = [];
+    for (const file of imageFiles) {
+      const path = `${Date.now()}-${file.name}`;
+      const { error } = await supabase.storage.from("project-images").upload(path, file);
+      if (error) { setFormError("Image upload failed: " + error.message); return urls; }
+      const { data } = supabase.storage.from("project-images").getPublicUrl(path);
+      urls.push(data.publicUrl);
+    }
+    return urls;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,8 +72,10 @@ const Admin = () => {
       return;
     }
     setFormError("");
+    setUploading(true);
 
     const pdfUrl = await uploadPdf();
+    const imageUrls = await uploadImages();
 
     const payload = {
       title: form.title.trim(),
@@ -68,7 +84,10 @@ const Admin = () => {
       status: form.status,
       category: form.category.trim() || null,
       team_members: form.team_members ? form.team_members.split(",").map((m) => m.trim()).filter(Boolean) : [],
+      video_url: form.video_url.trim() || null,
+      external_link: form.external_link.trim() || null,
       ...(pdfUrl ? { pdf_url: pdfUrl } : {}),
+      ...(imageUrls.length > 0 ? { images: imageUrls } : {}),
     };
 
     try {
@@ -82,8 +101,11 @@ const Admin = () => {
       setForm(emptyForm);
       setEditingId(null);
       setPdfFile(null);
+      setImageFiles([]);
+      setUploading(false);
       setTimeout(() => setSuccessMsg(""), 4000);
     } catch (err: any) {
+      setUploading(false);
       setFormError(err.message);
     }
   };
@@ -97,8 +119,11 @@ const Admin = () => {
       status: p.status,
       team_members: p.team_members.join(", "),
       category: p.category || "",
+      video_url: p.video_url || "",
+      external_link: p.external_link || "",
     });
     setPdfFile(null);
+    setImageFiles([]);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -106,6 +131,7 @@ const Admin = () => {
     setEditingId(null);
     setForm(emptyForm);
     setPdfFile(null);
+    setImageFiles([]);
   };
 
   return (
@@ -172,6 +198,22 @@ const Admin = () => {
               <Field label="Team Members">
                 <input type="text" value={form.team_members} onChange={(e) => setForm({ ...form, team_members: e.target.value })} placeholder="Name 1, Name 2" className="form-input" />
                 <p className="text-[11px] text-muted-foreground mt-1">Separate names with commas</p>
+              </Field>
+
+              <Field label="Video URL">
+                <input type="url" value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })} placeholder="YouTube or direct video URL" className="form-input" />
+              </Field>
+
+              <Field label="External Link">
+                <input type="url" value={form.external_link} onChange={(e) => setForm({ ...form, external_link: e.target.value })} placeholder="https://project-demo.com" className="form-input" />
+              </Field>
+
+              <Field label="Project Images">
+                <label className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-dashed border-border bg-background text-sm text-muted-foreground cursor-pointer hover:border-accent transition-colors">
+                  <Upload className="w-4 h-4" />
+                  {imageFiles.length > 0 ? `${imageFiles.length} image(s) selected` : "Choose images…"}
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => setImageFiles(Array.from(e.target.files || []))} />
+                </label>
               </Field>
 
               <Field label="PDF Document">
